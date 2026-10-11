@@ -6,6 +6,14 @@
   function fmt(v) { if (v !== 0 && Math.abs(v) < 0.000001) return v.toExponential(6); return v.toLocaleString('en-US', { maximumFractionDigits: 6 }); }
   function signed(v) { return (v > 0 ? '+' : '') + fmt(v); }
   function list(ids) { return ids.length ? ids.map(M.name).join(', ') : 'None'; }
+  function decision(r, executed, blocked) {
+    if (blocked && r.active) return r.status === 'Member: leaves after this turn' ? 'Member: would leave; proposal blocked' : r.status + ' (not executed)';
+    if (!executed) return r.status;
+    if (r.status === 'Candidate: joins this turn') return 'Joined this turn';
+    if (r.status === 'Member: leaves after this turn') return 'Left after this turn';
+    if (r.status === 'Member: stays') return 'Stayed in league';
+    return r.status;
+  }
   function gain(v) { return '<span class="' + (v < -M.EPS ? 'loss' : v > M.EPS ? 'success' : '') + '">' + signed(v) + '</span>'; }
   function table(id, caption, headings, body, cls) {
     return '<div class="table-scroll" id="' + id + '-scroll" tabindex="0" role="region" aria-label="' + esc(caption) + ', scroll horizontally if needed"><table id="' + id + '" class="' + (cls || '') + '"><caption>' + esc(caption) + '</caption><thead><tr>' + headings.map(function (h) { return '<th scope="col">' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
@@ -37,8 +45,8 @@
     });
     svg += '</svg>';
     document.getElementById('map-panel').innerHTML = svg + '<p><strong>Dashed blue:</strong> water. <strong>Dotted gray:</strong> land. Every route works in both directions.</p><p>This schematic is illustrative; shipments use the direct connection, never a path through another city.</p>';
-    var costRows = M.ids.map(function (id, i) { var c = M.scenarios[s.scenario].costs[i]; return '<tr><th scope="row">' + M.name(id) + '</th>' + td(c[0]) + td(c[1]) + td(M.autarky(s.scenario, id).utility) + '</tr>'; }).join('');
-    document.getElementById('costs-panel').innerHTML = table('costs-table', 'Production costs and autarky', ['City', 'Labor / grain', 'Labor / cloth', 'Autarky utility'], costRows);
+    var costRows = M.ids.map(function (id, i) { var c = M.scenarios[s.scenario].costs[i]; return '<tr><th scope="row">' + M.name(id) + '</th>' + td(c[0]) + td(c[1]) + td(c[0] / c[1]) + td(M.autarky(s.scenario, id).utility) + '</tr>'; }).join('');
+    document.getElementById('costs-panel').innerHTML = table('costs-table', 'Production costs and autarky', ['City', 'Labor / grain', 'Labor / cloth', 'Cloth forgone / grain', 'Autarky utility'], costRows) + '<p class="muted">Opportunity cost: making one more grain gives up this much cloth, before transport. Compare relative costs, not just productivity.</p>';
     var routeRows = edges.map(function (pair) { var a = M.ids[pair[0]], b = M.ids[pair[1]], r = M.route(s.scenario, a, b); return '<tr><th scope="row">' + M.name(a) + ' ↔ ' + M.name(b) + '</th><td>' + r.kind + '</td>' + td(r.cost) + '</tr>'; }).join('');
     document.getElementById('routes-panel').innerHTML = table('routes-table', 'Transport paid by the exporter', ['Direct route', 'Type', 'Labor / unit'], routeRows);
   }
@@ -47,7 +55,7 @@
       var member = s.members.includes(id), candidate = d.candidates.includes(id), active = member || candidate;
       return '<div class="city-card ' + (member ? 'member' : candidate ? 'candidate' : '') + '"><h3>' + (i + 1) + '. ' + M.name(id) + '</h3>' +
         (member ? '<p><strong>League member</strong></p>' : '<label class="invite-label" for="candidate-' + id + '"><input id="candidate-' + id + '" type="checkbox"' + (candidate ? ' checked' : '') + (s.turn === 6 ? ' disabled' : '') + ' aria-describedby="production-help candidate-' + id + '-error">Invite ' + M.name(id) + '</label>' + error('candidate-' + id)) +
-        '<label for="share-' + id + '">Grain labor share (%)</label><input id="share-' + id + '" type="number" min="0" max="100" step="any" value="' + esc(d.shares[i]) + '" aria-describedby="production-help share-' + id + '-error"' + (!active || s.turn === 6 ? ' disabled' : '') + '>' + error('share-' + id) +
+        '<label for="share-' + id + '"><span class="sr-only">' + M.name(id) + ' </span>Grain labor share (%)</label><input id="share-' + id + '" type="number" min="0" max="100" step="any" value="' + esc(d.shares[i]) + '" aria-describedby="production-help share-' + id + '-error"' + (!active || s.turn === 6 ? ' disabled' : '') + '>' + error('share-' + id) +
         '<p class="muted">' + (active ? 'Remaining production labor makes cloth.' : 'Outside: consumes its autarky output.') + '</p></div>';
     }).join('');
     var active = M.ids.filter(function (id) { return s.members.includes(id) || d.candidates.includes(id); });
@@ -71,10 +79,11 @@
     var words = (executed ? 'Turn gain: ' : 'Proposed turn gain: ') + signed(p.score) + ' utility units. ';
     if (p.rejected.length) words += 'Refused invitations: ' + list(p.rejected) + '. Nobody joins and no shipments execute until every invitation is acceptable. ';
     else words += (executed ? 'Joined: ' : 'Would join: ') + list(p.admitted) + '. ';
-    if (p.departed.length) words += executed ? list(p.departed) + ' left after this turn; their losses count toward your score.' : 'Loss warning: ' + list(p.departed) + ' will leave after this turn. These losses count toward your score.';
+    if (p.departed.length && p.rejected.length) words += 'If this plan could execute, ' + list(p.departed) + ' would leave after taking a loss. No membership changes have occurred.';
+    else if (p.departed.length) words += executed ? list(p.departed) + ' left after this turn; their losses count toward your score.' : 'Loss warning: ' + list(p.departed) + ' will leave after this turn. These losses count toward your score.';
     else words += 'No departures.';
     document.getElementById('preview-summary').textContent = words;
-    var outcomeRows = p.rows.map(function (r) { return '<tr><th scope="row">' + M.name(r.id) + '</th>' + td(r.consumption[0]) + td(r.consumption[1]) + td(r.utility) + td(r.baseline) + '<td class="num">' + gain(r.gain) + '</td><td>' + r.status + '</td></tr>'; }).join('');
+    var outcomeRows = p.rows.map(function (r) { return '<tr><th scope="row">' + M.name(r.id) + '</th>' + td(r.consumption[0]) + td(r.consumption[1]) + td(r.utility) + td(r.baseline) + '<td class="num">' + gain(r.gain) + '</td><td>' + decision(r, executed, p.rejected.length > 0) + '</td></tr>'; }).join('');
     var laborRows = p.rows.map(function (r) { return '<tr><th scope="row">' + M.name(r.id) + '</th>' + td(r.transport) + td(r.labor[0]) + td(r.labor[1]) + td(r.production[0]) + td(r.production[1]) + '</tr>'; }).join('');
     var flowRows = p.rows.map(function (r) { return '<tr><th scope="row">' + M.name(r.id) + '</th>' + td(r.imports[0]) + td(r.exports[0]) + td(r.imports[1]) + td(r.exports[1]) + '</tr>'; }).join('');
     document.getElementById('results-panel').innerHTML = table('outcomes-table', 'Consumption, utility and membership', ['City', 'Grain consumed', 'Cloth consumed', 'Utility', 'Autarky', 'Gain / loss', 'Decision'], outcomeRows, 'results-table') +
@@ -92,7 +101,7 @@
     var cityRows = M.ids.map(function (id, i) { var last = s.history.length ? s.history[s.history.length - 1].rows[i] : null;
       return '<tr><th scope="row">' + M.name(id) + '</th><td class="num">' + gain(s.cumulative[i]) + '</td>' + (last ? td(last.consumption[0]) + td(last.consumption[1]) + td(last.utility) : '<td>—</td><td>—</td><td>—</td>') + '<td>' + (s.members.includes(id) ? 'Member' : 'Outside') + '</td></tr>'; }).join('');
     var detailRows = s.history.map(function (h) { return h.rows.map(function (r) {
-      return '<tr><th scope="row">' + h.turn + ' · ' + M.name(r.id) + '</th>' + td(r.consumption[0]) + td(r.consumption[1]) + td(r.utility) + '<td class="num">' + gain(r.gain) + '</td><td>' + r.status + '</td></tr>';
+      return '<tr><th scope="row">' + h.turn + ' · ' + M.name(r.id) + '</th>' + td(r.consumption[0]) + td(r.consumption[1]) + td(r.utility) + '<td class="num">' + gain(r.gain) + '</td><td>' + decision(r, true, false) + '</td></tr>';
     }).join(''); }).join('');
     document.getElementById('history-panel').innerHTML = table('history-table', 'Turn scores and membership changes', ['Turn', 'Gain / loss', 'Cumulative', 'Joined', 'Left', 'League after turn'], turnRows) +
       table('city-history-table', 'Cumulative city gains and latest consumption', ['City', 'Cumulative gain', 'Latest grain', 'Latest cloth', 'Latest utility', 'Membership'], cityRows, 'results-table') +
@@ -100,7 +109,7 @@
   }
   function prompts() {
     document.getElementById('prompt-controls').innerHTML = Object.keys(M.prompts).map(function (id) { var p = M.prompts[id];
-      return '<div class="prompt"><h3>' + p.title + '</h3><p>' + p.question + '</p><div class="prompt-actions"><button id="load-' + id + '" type="button">Load exercise ' + (Object.keys(M.prompts).indexOf(id) + 1) + '</button><div class="prompt-choice"><label for="answer-' + id + '">Your answer</label><select id="answer-' + id + '"><option value="">Choose an answer</option>' + p.options.map(function (o) { return '<option value="' + o[0] + '">' + esc(o[1]) + '</option>'; }).join('') + '</select></div><button id="check-' + id + '" type="button">Check answer</button></div><p id="feedback-' + id + '"></p></div>';
+      return '<div class="prompt"><h3>' + p.title + '</h3><p>' + p.question + '</p><div class="prompt-actions"><button id="load-' + id + '" type="button">Load exercise ' + (Object.keys(M.prompts).indexOf(id) + 1) + '</button><div class="prompt-choice"><label for="answer-' + id + '">Your answer<span class="sr-only"> for exercise ' + (Object.keys(M.prompts).indexOf(id) + 1) + '</span></label><select id="answer-' + id + '"><option value="">Choose an answer</option>' + p.options.map(function (o) { return '<option value="' + o[0] + '">' + esc(o[1]) + '</option>'; }).join('') + '</select></div><button id="check-' + id + '" type="button" aria-label="Check answer for exercise ' + (Object.keys(M.prompts).indexOf(id) + 1) + '">Check answer</button></div><p id="feedback-' + id + '"></p></div>';
     }).join('');
   }
   root.HansaView = { fmt: fmt, list: list, summary: summary, world: world, planner: planner, results: results, history: history, prompts: prompts };

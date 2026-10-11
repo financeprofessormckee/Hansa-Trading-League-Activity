@@ -25,6 +25,7 @@
     <div class="title-row"><div><h1>Hansa</h1><p class="intro">Build a league worth joining.</p></div><span class="version">Interactive v1 · for review</span></div>
     <p class="lead">Trade works when cities gain together. Allocate production, pay to move goods, and offer outsiders a better life than they can achieve alone.</p>
     <noscript><p class="notice">Enable JavaScript to play this local activity.</p></noscript>
+    <nav class="activity-nav" aria-label="Activity sections"><a href="#instructions">How to play</a><a href="#world-heading">Cities and costs</a><a href="#plan-heading">Plan a turn</a><a href="#checks-heading">Self-checks</a></nav>
     <section aria-label="Session summary" class="scoreboard">
       <div><span class="stat-label">Session</span><strong id="turn-label">Turn 1 of 6</strong></div>
       <div><span class="stat-label">Cumulative gains</span><strong id="score-label">0 utility units</strong></div>
@@ -37,10 +38,10 @@
       <li>Preview consumption and utility. Newcomers must beat autarky (their best outcome without trade). Members taking a loss will leave after the turn.</li>
       <li>Execute six turns. Your score includes all gains and losses relative to autarky; there are no carried inventories.</li>
     </ol><p>Utility = 2√(grain × cloth), a balanced-consumption index, not money. Equal labor shares maximize autarky utility. All costs and outcomes are deterministic; repeated plans repeat their results.</p></details>
-    <section aria-labelledby="world-heading"><div class="section-heading"><h2 id="world-heading">Four cities, two goods</h2><span class="muted">A schematic trading network</span></div>
+    <section aria-labelledby="world-heading"><div class="section-heading"><h2 id="world-heading" tabindex="-1">Four cities, two goods</h2><span class="muted">A schematic trading network</span></div>
       <div class="world-grid"><div id="map-panel" class="map-panel"></div><div><div id="costs-panel"></div><div id="routes-panel"></div></div></div>
     </section>
-    <section aria-labelledby="plan-heading" id="plan-section"><div class="section-heading"><h2 id="plan-heading">Plan this turn</h2><button id="example" type="button">Load worked example</button></div>
+    <section aria-labelledby="plan-heading" id="plan-section"><div class="section-heading"><h2 id="plan-heading" tabindex="-1">Plan this turn</h2><button id="example" type="button">Load worked example</button></div>
       <p class="muted">The example starts a new inexpensive-transport session. It loads a plan without executing it.</p>
       <p id="production-help">Choose the grain share of labor remaining <strong>after transport</strong>. The rest makes cloth. Invited cities join only when their preview beats autarky.</p>
       <div id="production-controls" class="city-grid"></div>
@@ -50,9 +51,9 @@
       <div class="turn-actions"><button id="preview" class="primary" type="button">Preview turn</button><button id="execute" type="button" disabled>Execute turn</button><span id="preview-hint" class="muted">Preview your current plan before executing.</span></div>
     </section>
     <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
-    <section id="results-section" aria-labelledby="results-heading" hidden><h2 id="results-heading">Turn preview</h2><p id="preview-summary" class="notice"></p><p class="muted">All quantities are units of goods; labor and utility are separate indices. Tables show up to six fractional digits.</p><div id="results-panel"></div></section>
+    <section id="results-section" aria-labelledby="results-heading" hidden><h2 id="results-heading">Turn preview</h2><p id="preview-summary" class="notice"></p><p class="muted">All quantities are units of goods; labor and utility are separate indices. Tables show up to six fractional digits.</p><p><a href="#plan-heading">Return to your plan</a></p><div id="results-panel"></div></section>
     <section id="history-section" aria-labelledby="history-heading" hidden><h2 id="history-heading">Your league’s record</h2><p id="final-summary"></p><div id="history-panel"></div></section>
-    <section aria-labelledby="checks-heading" class="checks"><h2 id="checks-heading">Try four self-checks</h2><p>Optional exercises start a new session and load a prescribed plan. Preview it, then check your answer. A refusal can be useful evidence.</p><div id="prompt-controls"></div></section>
+    <section aria-labelledby="checks-heading" class="checks"><h2 id="checks-heading" tabindex="-1">Try four self-checks</h2><p>Optional exercises start a new session and load a prescribed plan. Loading an exercise moves focus to the plan. Preview it, then return here to check your answer. A refusal can be useful evidence.</p><div id="prompt-controls"></div></section>
     <section aria-labelledby="resources-heading" class="project-notes"><h2 id="resources-heading">About this prototype</h2><p>Economic concepts by David Friedman; this small browser adaptation records Eric McKee’s model choices for David’s review. Code is MIT-licensed; the full accessibility audit remains pending.</p><ul class="resources"><li><a href="README.md">Project overview</a></li><li><a href="SPECIFICATION.md">Browser specification</a></li><li><a href="DESIGN.md">Source-based brief</a></li><li><a href="http://daviddfriedman.com/Living_Paper/Hansa/hansa_instructions/hansa_instructions.htm">Original Hansa instructions</a></li></ul></section>
   </main>
   <footer>

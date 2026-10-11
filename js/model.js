@@ -139,7 +139,7 @@
       options: [['loss', 'Utility falls below autarky'], ['random', 'Membership is random'], ['quantity', 'Any imports guarantee a gain']],
       explanation: 'Each exporter uses 15 labor to ship 10 units. Balanced production and these shipments yield 63.737744 utility, below 70.710678. The entire proposal must be revised before execution.' },
     equal: { title: '4. Compare opportunity costs', question: 'Does specialization guarantee mutual gains when opportunity costs are equal?', answer: 'no',
-      options: [['no', 'No; absolute productivity differs'], ['always', 'Yes; specialization always helps'], ['ignore', 'Transport costs do not matter']],
+      options: [['no', 'No; relative production costs are the same'], ['always', 'Yes; specialization always helps'], ['ignore', 'Transport costs do not matter']],
       explanation: 'All cities give up 0.5 cloth per grain in this scenario, despite different absolute productivity. This specialization plan lowers both utilities; Birch refuses.' }
   };
   function checkPrompt(id, s, d, hasPreview, answer) {
