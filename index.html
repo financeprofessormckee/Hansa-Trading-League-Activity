@@ -7,6 +7,7 @@
   <title>Hansa — Friedman Economic Games</title>
   <link rel="stylesheet" href="assets/cob-brand.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="workspace.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -21,39 +22,43 @@
     <div class="cob-brand__rule" aria-hidden="true"></div>
   </header>
   <main id="main" tabindex="-1">
-    <p class="eyebrow">Friedman Economic Games · Proposal 27</p>
-    <div class="title-row"><div><h1>Hansa</h1><p class="intro">Build a league worth joining.</p></div><span class="version">Interactive v1 · for review</span></div>
-    <p class="lead">Trade works when cities gain together. Allocate production, pay to move goods, and offer outsiders a better life than they can achieve alone.</p>
+    <div class="hero">
+      <div><p class="eyebrow">Friedman Economic Games · Proposal 27</p><h1>Hansa<span class="hero-rule" aria-hidden="true"></span></h1><p class="intro">Build a league worth joining.</p></div>
+      <div class="hero-note"><span class="version">Learning workspace · for review</span><p>Four cities. Two goods. Six turns.</p><p>Make cooperation pay for every newcomer.</p></div>
+    </div>
     <noscript><p class="notice">Enable JavaScript to play this local activity.</p></noscript>
+    <nav class="activity-nav" aria-label="Activity sections"><a href="#plan-heading">Plan a turn</a><a href="#world-heading">Trading chart</a><a href="#comparison-heading">Compare economies</a><a href="#checks-heading">Self-checks</a></nav>
     <section aria-label="Session summary" class="scoreboard">
-      <div><span class="stat-label">Session</span><strong id="turn-label">Turn 1 of 6</strong></div>
-      <div><span class="stat-label">Cumulative gains</span><strong id="score-label">0 utility units</strong></div>
-      <div><span class="stat-label">League membership</span><strong id="members-label">Alder · 1 of 4 cities</strong></div>
+      <div><span class="stat-label">Session</span><strong id="turn-label">Turn 1 of 6</strong><ol id="turn-progress" aria-label="Six-turn progress"></ol></div>
+      <div><span class="stat-label">Cumulative gains over autarky</span><strong id="score-label">0 utility units</strong><span class="stat-note">Every gain and loss counts.</span></div>
+      <div><span class="stat-label">Your trading league</span><strong id="members-label">Alder · 1 of 4 cities</strong><span class="stat-note">Newcomers must benefit to join.</span></div>
     </section>
-    <div class="session-controls"><div><label for="scenario">Economy</label><select id="scenario"><option value="inexpensive">Inexpensive transport</option><option value="expensive">Expensive transport</option><option value="equal">Equal opportunity costs</option></select></div><button id="restart" type="button">Restart session</button><p>Changing the economy starts a new session.</p></div>
-    <details id="instructions" open><summary>How to build your league</summary><ol>
-      <li>Each city has 100 labor per turn. Choose outsiders to invite, then divide production labor between grain and cloth.</li>
-      <li>Add shipments between participating cities. The exporter pays transport labor <em>before</em> production. Goods must come from its own output.</li>
-      <li>Preview consumption and utility. Newcomers must beat autarky (their best outcome without trade). Members taking a loss will leave after the turn.</li>
-      <li>Execute six turns. Your score includes all gains and losses relative to autarky; there are no carried inventories.</li>
-    </ol><p>Utility = 2√(grain × cloth), a balanced-consumption index, not money. Equal labor shares maximize autarky utility. All costs and outcomes are deterministic; repeated plans repeat their results.</p></details>
-    <section aria-labelledby="world-heading"><div class="section-heading"><h2 id="world-heading">Four cities, two goods</h2><span class="muted">A schematic trading network</span></div>
-      <div class="world-grid"><div id="map-panel" class="map-panel"></div><div><div id="costs-panel"></div><div id="routes-panel"></div></div></div>
+    <div class="session-controls"><div><label for="scenario">Economy</label><select id="scenario"><option value="inexpensive">Inexpensive transport</option><option value="expensive">Expensive transport</option><option value="equal">Equal opportunity costs</option></select></div><button id="restart" type="button">Restart session</button><p>Changing the economy clears the session.<br>Use “Compare economies” to keep your plan.</p></div>
+    <details id="instructions"><summary>How to build your league</summary><ol>
+      <li>Each city has 100 labor per turn. Invite outsiders and divide production labor between grain and cloth.</li>
+      <li>The exporter pays transport labor <em>before</em> production. Export only goods the city itself produces.</li>
+      <li>Preview the council’s verdict. Every newcomer must beat autarky: its best outcome without trade. A member that loses will leave after an executed turn.</li>
+      <li>Execute six turns. Compare your experiments and explain who benefited, who did not, and why.</li>
+    </ol><p>Utility = 2√(grain × cloth), a balanced-consumption index, not money. Equal labor shares maximize autarky utility. Goods are consumed each turn. Costs are deterministic: repeating a plan repeats its outcome.</p></details>
+    <section aria-labelledby="world-heading" class="chart-section"><div class="section-heading"><div><p class="eyebrow">The trading chart</p><h2 id="world-heading" tabindex="-1">Four cities, two goods</h2></div><span class="muted">Fictional cities · direct routes only</span></div>
+      <div class="world-grid"><div id="map-panel" class="map-panel"></div><div class="chart-reference"><h3>Read the economy</h3><p><strong>Comparative advantage</strong> means giving up less of one good to produce the other. Even a less productive city can have something worth trading.</p><p><strong>Transport consumes labor.</strong> A promising exchange can become unprofitable—or impossible—when moving goods takes too much work.</p><details><summary>Production costs &amp; autarky</summary><div id="costs-panel"></div></details><details><summary>All six direct routes</summary><div id="routes-panel"></div></details></div></div>
     </section>
-    <section aria-labelledby="plan-heading" id="plan-section"><div class="section-heading"><h2 id="plan-heading">Plan this turn</h2><button id="example" type="button">Load worked example</button></div>
-      <p class="muted">The example starts a new inexpensive-transport session. It loads a plan without executing it.</p>
-      <p id="production-help">Choose the grain share of labor remaining <strong>after transport</strong>. The rest makes cloth. Invited cities join only when their preview beats autarky.</p>
+    <section aria-labelledby="plan-heading" id="plan-section"><div class="section-heading"><div><p class="eyebrow">01 / City charters</p><h2 id="plan-heading" tabindex="-1">Plan this turn</h2></div><button id="example" type="button">Load worked example</button></div>
+      <p class="muted">First voyage? The example starts a new inexpensive-transport session and loads a plan for you to inspect.</p>
+      <p id="production-help">Choose the grain share of labor remaining <strong>after transport</strong>. The rest makes cloth. Specialization is a choice, not a guarantee of gains.</p>
       <div id="production-controls" class="city-grid"></div>
-      <h3>Shipments</h3><p id="shipment-help">Direct routes only. Use 0–200 units per row, up to 24 rows. Repeated routes add together. Imports cannot be re-exported.</p>
+      <div class="manifest-heading"><p class="eyebrow">02 / Cargo manifest</p><h3>Shipments</h3></div><p id="shipment-help">Direct routes only. Use 0–200 units per row, up to 24 rows. Repeated routes add together. Imports cannot be re-exported.</p>
       <div id="shipments-controls"></div><button id="add-shipment" type="button">Add shipment</button>
+      <p id="draft-health" class="draft-health"></p>
       <p id="plan-error" class="error" tabindex="-1" hidden></p>
-      <div class="turn-actions"><button id="preview" class="primary" type="button">Preview turn</button><button id="execute" type="button" disabled>Execute turn</button><span id="preview-hint" class="muted">Preview your current plan before executing.</span></div>
+      <div class="turn-actions"><div class="turn-buttons"><button id="preview" class="primary" type="button">Preview turn</button><button id="execute" type="button" disabled>Execute turn</button></div><span id="preview-hint" class="muted">Preview your current plan before executing.</span></div>
     </section>
     <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
-    <section id="results-section" aria-labelledby="results-heading" hidden><h2 id="results-heading">Turn preview</h2><p id="preview-summary" class="notice"></p><p class="muted">All quantities are units of goods; labor and utility are separate indices. Tables show up to six fractional digits.</p><div id="results-panel"></div></section>
-    <section id="history-section" aria-labelledby="history-heading" hidden><h2 id="history-heading">Your league’s record</h2><p id="final-summary"></p><div id="history-panel"></div></section>
-    <section aria-labelledby="checks-heading" class="checks"><h2 id="checks-heading">Try four self-checks</h2><p>Optional exercises start a new session and load a prescribed plan. Preview it, then check your answer. A refusal can be useful evidence.</p><div id="prompt-controls"></div></section>
-    <section aria-labelledby="resources-heading" class="project-notes"><h2 id="resources-heading">About this prototype</h2><p>Economic concepts by David Friedman; this small browser adaptation records Eric McKee’s model choices for David’s review. Code is MIT-licensed; the full accessibility audit remains pending.</p><ul class="resources"><li><a href="README.md">Project overview</a></li><li><a href="SPECIFICATION.md">Browser specification</a></li><li><a href="DESIGN.md">Source-based brief</a></li><li><a href="http://daviddfriedman.com/Living_Paper/Hansa/hansa_instructions/hansa_instructions.htm">Original Hansa instructions</a></li></ul></section>
+    <section id="results-section" aria-labelledby="results-heading" hidden><p class="eyebrow">03 / The council’s verdict</p><h2 id="results-heading">Turn preview</h2><p id="preview-summary" class="notice"></p><div id="council-panel"></div><p><a href="#plan-heading">Return to your plan</a></p><details class="calculation-details"><summary>Inspect the full accounting</summary><p class="muted">Goods, labor and utility are separate indices. Tables show up to six fractional digits; membership uses full precision with a 0.000000001 tolerance.</p><div id="results-panel"></div></details></section>
+    <section id="comparison-section" aria-labelledby="comparison-heading"><div class="section-heading"><div><p class="eyebrow">The experiment bench</p><h2 id="comparison-heading" tabindex="-1">Same plan. Different economy.</h2></div><button id="compare-economies" type="button">Compare economies</button></div><p>Hold invitations, membership, production shares, and shipment quantities fixed. Test what happens when transport costs or production costs change.</p><div id="comparison-panel"></div><p><a href="#plan-heading">Return to your plan</a></p></section>
+    <section id="history-section" aria-labelledby="history-heading" hidden><div class="section-heading"><div><p class="eyebrow">The league ledger</p><h2 id="history-heading">Your league’s record</h2></div><button id="download-record" type="button" disabled>Download record (CSV)</button></div><p id="final-summary"></p><div id="history-panel"></div><div class="debrief"><h3>Bring evidence to the discussion</h3><ol><li>Who gained most? Did a positive total conceal any individual loss?</li><li>Can Cedar contribute despite Alder’s absolute advantage in both goods?</li><li>How did the same plan fare when moving goods cost more labor?</li><li>Would repeating your best plan teach you anything new?</li></ol><p>The CSV records completed turns, all four cities, and full calculation precision. It is a local download; the activity does not save your session after you close it.</p></div></section>
+    <section aria-labelledby="checks-heading" class="checks"><p class="eyebrow">Test your reasoning</p><h2 id="checks-heading" tabindex="-1">Try four self-checks</h2><p>Optional exercises start a new session and load a prescribed plan. Loading an exercise moves focus to the plan. Preview it, then return here to check your answer. A refusal can be useful evidence.</p><div id="prompt-controls"></div></section>
+    <section aria-labelledby="resources-heading" class="project-notes"><h2 id="resources-heading">About this prototype</h2><p>Economic concepts by David Friedman; this small browser adaptation records Eric McKee’s model choices for David’s review. Code is MIT-licensed; the full accessibility audit remains pending.</p><ul class="resources"><li><a href="README.md">Project overview</a></li><li><a href="SPECIFICATION.md">Browser specification</a></li><li><a href="DESIGN.md">Source-based brief</a></li><li><a href="REVIEW.md">Review and proposed changes</a></li><li><a href="http://daviddfriedman.com/Living_Paper/Hansa/hansa_instructions/hansa_instructions.htm">Original Hansa instructions</a></li></ul></section>
   </main>
   <footer>
     <p>Economic concepts: David Friedman. Development: Eric McKee.</p>
@@ -61,6 +66,7 @@
     <p>Historical Hansa development: Tom Courtney. The original project also links Mikel Evins' Java rewrite.</p>
   </footer>
   <script src="js/model.js"></script>
+  <script src="js/learning.js"></script>
   <script src="js/view.js"></script>
   <script src="js/app.js"></script>
 </body>

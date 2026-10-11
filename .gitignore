@@ -8,3 +8,8 @@ desktop.ini
 
 # Authoring artifacts (kept in the Dropbox working copy, not the site)
 *.docx
+
+# Optional browser-test dependencies and output
+node_modules/
+test-results/
+playwright-report/
