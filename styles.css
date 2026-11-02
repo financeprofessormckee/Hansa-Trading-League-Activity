@@ -94,3 +94,9 @@ footer p { margin: .4rem 0; }
 @media (max-width: 550px) { .scoreboard, .city-grid { grid-template-columns: 1fr; } .scoreboard > div { padding: .7rem 1rem; } .scoreboard > div + div { border-top: 1px solid #b7b7b7; } main { padding-block: 1.5rem; } .session-controls > div, .session-controls select { width: 100%; } .map-panel { padding: .5rem; } .prompt-actions { align-items: stretch; } .prompt-choice { flex-basis: 100%; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 @media print { .skip-link, .session-controls, #plan-section, .checks, .resources, #status { display: none; } :root { background: #fff; } main { padding-block: 1rem; } .table-scroll { overflow: visible; } }
+
+/* Keep the existing visual language while making the long activity navigable. */
+.activity-nav { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin-top: 1.25rem; }
+.activity-nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+h2[tabindex], #instructions { scroll-margin-top: 1rem; }
+@media print { .activity-nav { display: none; } }

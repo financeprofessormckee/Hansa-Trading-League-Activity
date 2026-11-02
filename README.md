@@ -2,10 +2,11 @@
 
 **[Click Here to Launch the Interactive Activity](https://financeprofessormckee.github.io/Hansa-Trading-League-Activity/)**
 
-> **Status:** v1 prototype under review with David Friedman. Not yet accessibility-audited
-> for teaching release.
+> **Status:** revised development version (November 2026), under review with David Friedman.
+> Not yet accessibility-audited for teaching release. Review notes for this revision are in
+> [REVIEW.md](REVIEW.md).
 
-Build a trading league through comparative advantage, transport costs, and voluntary membership. Four cities make grain and cloth. Students invite cities into a league, set each city's production mix, and plan direct shipments. Newcomers join only if they beat their best no-trade outcome. Six turns are scored on cumulative gains over autarky.
+Build a trading league through comparative advantage, transport costs, and voluntary membership. Four cities make grain and cloth. Students invite cities into a league, set each city's production mix, and plan direct shipments. Newcomers join only if they beat their best no-trade outcome. Six turns are scored on cumulative gains over autarky. This revision adds a trading workspace: opportunity-cost city cards with share presets, a labor-use preview, a cargo manifest, council cards with expandable accounting, a side-by-side economy comparison, turn progress, ledger prompts, and CSV export.
 
 ## Educator Guide: Classroom Integration
 
